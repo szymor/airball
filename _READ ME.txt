@@ -1,0 +1,73 @@
+2016/09/28 - Clement CORDE - c1702@yahoo.com
+
+After some time, I finally decided to release my old sources. I'm not into coding anymore, I don't know what my sources are worth, but as I get messages from time to time from guys asking me how I did this or that, well, here it is.
+
+As I said, I don't code anymore and I have bad memories. Therefore I don't know if I'll be able to answer questions...
+
+I quickly tried to compile the game, it worked on the machine I'm on, i.e. 32 bits Debian 8.x.
+
+So, what do we got here, and how should you proceed?
+
+
+* Folders:
+-airball0	> The game
+-config0	> Configuration utility
+
+-level_ed0	> Level editing tool
+
+-exechk0	> Checksum setup for final binary program
+-psdprot0	> PSD file scrambler
+
+* Additional file:
+src_alt_nokb.tar.gz		> Alternate sources, with high score name entry and load/save menu for machines without keyboard. I didn't have time to check but I think only the "menu.c" and "game.c" files differ.
+
+
+* Building the game:
+I used "make" and "Code::blocks", depending on what machine I was on. Please note that as the YM lib is written in C++, you'll have to use the g++ linker.
+
+Step one, you have to build the YM library (by Leonard/OXG). Enter the "airball0" folder, then the "ymlib" folder. I think it's better to use a static ".a" file, but one of my friends had to use a ".so" on a Mac system. You have a ".sh" and a Makefile for each version (make -f Makefile_<a|so>). Once it's done, copy the lib in the main folder.
+
+Step two, back in the main folder, "make" the game. That's it, the "protection" is disabled by default, the game should start.
+
+Default keys are: arrows for movement, left control to jump, space to take/drop an object.
+
+You don't like the default keys? No problem, just build and run the config utility. Run the utility in the game folder or copy the "airball.cfg" file into the game folder. (Game has to be restarted!).
+
+
+* Level editing tool:
+The level editing tool is provided, but as for my generic level editing tool, it was designed for my exclusive use, for the Airball game only, and is even less user friendly than my regular editing tool.
+
+You can move from room to room with the arrow keys in "basic" mode (UP is top right direction).
+In this mode, keypad 1, 2, 3, 5 are used to change the room dimensions.
+Ctrl+arrows: insert room. Del: delete room.
+Shift+arrows: if there is no room in the direction, create a new room.
+Alt+arrows: when used into an empty direction, used to link a room to another (using room numbers).
+
+If you press the Keypad 0, you enter/leave the "map" mode, into which you can add/remove blocks. In this mode, use keypad 1, 2, 3 and 5 or mouse to move the current block location (x and y), and keypad 9 and 6 or mouse wheel to go up and down (z). Arrows are used to select the block to add. LMB/RMB to add/remove block.
+
+L is to switch the light on/off, but you won't see it in the editor (light status is written on the top left part of the screen).
+W to change the wall pattern.
+
+You can also use G to jump to a specific room, that is, if you know its number! ;)
+F8 to save.
+
+
+* A word about the "protection":
+I made a kind of protection, not a copy protection, but only to make sure that someone would not poke some bytes somewhere and then complain that the game is not working, or even worse, spread a buggy version.
+
+So, there is a checksum in the program file. Once the you "made" the file, run the exechk program on the binary, and you're done.
+
+I turned off this security in the sources, to turn it on, uncomment the "define EXE_CHECKSUM" at line 1090 in file main.c.
+
+There is also the same kind of trick on the graphic files. The file format used is Photoshop's PSD. The provided files are unscrambled. If you run the psdprot program on the PSD files, the files will be unreadable. The operation is reversible, so no worries.
+
+And finally, there is also a checksum on the level files (.edt).
+
+
+* Final notes:
+Have fun! :)
+
+Oh, and if ever you make a build on an exotic platform, let me know, I'll put it online. (I have a big endian version somewhere, if needed).
+
+
+--- EOF

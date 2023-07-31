@@ -1,0 +1,504 @@
+
+Introduction
+
+     "Now you're really in trouble," said the Evil Wizard.
+
+     "I've warned you about trespassing in my mansion. Now, since you did
+not take heed of my warnings, I'm turning you into a ball of air and
+sending you deep into my mansion of over 250 rooms, to search for the
+spellbook that may give you clues on how to transform yourself into a human
+again. It will not be a simple task, for you, as the ball of air, have a
+slow leak, and you'll need to jump on an air pump in some rooms to remain
+inflated. Take heed, for if you pump up too much you will burst! If you are
+lucky enough to find the  spellbook in these rooms, you'll next have to
+pick up the objects I've left, such as: crosses, tins of beans, a Buddha, a
+dragon statue, a pumpkin, a flask, and even crates that you'll need to get
+over treacherous obstacles! This is your one chance for survival", he
+cackles.
+
+     "Sounds easy," You laughingly boast to the Evil Wizard.
+
+     "Oh! Does it now!" he sneers. "Well, I'm also putting spikes in these
+rooms that will take your breath away, as well as killer pads on the floor.
+You have no chance for success...Hee! Hee! Hee!"
+
+
+Original credits :
+program - edward scio
+graphics - pete lyon
+music - paul shields
+rooms - peter scott
+copyright 1987 microdeal
+
+cracked 1987 tsunoo
+(c) 1987 microdeal
+(cr) 1987 tsunoo
+rhilty
+
+
+format :
+N° des salles dans les 4 directions (s16) : h d b g. -1 si rien.
+Type de la bordure (u8). (càd l'encadrement de la salle, il y a 3/4 types différents).
+taille de la salle : x, y (, z?, hstockée ?).
+light (yes/no)
+datas (u8) / dim max : 8x8x10
+
+airball :
+Hauteur du saut : 17 pixels.
+Distance : OxxO
+
+Sur 1 bloc :
+
+x  B
+----
+ne monte pas sur B, par contre, 1/4 de bloc vers l'avant, monte.
+
+ x
+xB
+--
+monte et s'arrête sur le bloc suivant.
+
+
+serpents : A partir de 242 en Y sur la page. Couleurs 32 à 47.
+48
+>
+16 = 1
+16 = 2
+< seq : 1 2 1 2 1 2 1
+32
+
+
+
+hauteur de saut :
+0 2 4 6 8 10 12 14
+15 16 17
+17 17 17 17
+16 15 14
+12 10 8 6 4 2 / 0
+
+=> 24 frames (24 + 1 atterrissage).
+
+0x3000 / 24 = 512 > 0x200.
+Spd = 0x200.
+
+Barre d'energie : x=104, y=SCR_Height-4 / w max = 150 (151 = explose), h = 2.
+//gHero.nAirLevel = 10;		// Un peu d'air pour placement sur la pompe.
+
+écrans pour les textes :
+> Get the spellbook <
+> Well done ball/You have a choice -/You can go and get/these ingredients/or....not!////    Press Y or N <
+> Good choice ball/These are the/ingredients/A crucifix/A buddha/A pumpkin/A dragon/A flask/And some beans/Now go <
+> You died//you scored xxxxx/points <
+> Well done , ball -//Ill turn you back//into a human ! <
+
+=====================================================================
+
+lleonard.oxg at free dot fr
+
+
+	gVar.nMusicNo = e_YmMusic_Menu;
+	ymMusicRestart(gVar.ppMusic[gVar.nCurMusic]);
+
+
+AIRBALL - 25TH ANNIVERSARY REVIVAL - DONE BY CLEMENT CORDE...
+
+#define	BLK_SPELLBOOK	93
+
+#define	BLK_BUDDHA		92
+#define	BLK_CRUCIFIX	46
+#define	BLK_PUMPKIN		181
+#define	BLK_DRAGON		191
+#define	BLK_FLASK		157
+#define	BLK_BEANS		200
+
+>
+AIRBALL
+
+TOP FIVE SCORES
+
+1 EDWARD SCIO  01000
+2 ROB YARDLEY  00800
+3 PAUL SHIELDS 00600
+4 PETE LYON    00400
+5 PETER SCOTT  00200
+<
+
+Sfx_PlaySfx(*(pAnmSlots[nSlotNo].pAnm + 1), *(pAnmSlots[nSlotNo].pAnm + 2));
+Sfx_StopSfx(*(pAnmSlots[nSlotNo].pAnm + 1));
+
+e_Sfx_Menu_Click = 0,
+e_Sfx_Game_Death,
+e_Sfx_Game_ObjectDrop,
+e_Sfx_Game_ObjectGet,
+e_Sfx_Game_Present,
+
+// Sfx.
+Sfx_PlaySfx(e_Sfx_Game_Present, 10);
+
+=====================================================================
+
+
+
+pause ?
+
+démo ?
+
+
+Faire des blocs animés ? Brasero...
+
+cas improbable restant : dans le cas ou on peut faire une boucle entre pièces, cas foireux ou un joueur bloque les deux blocs de sortie de la pièce suivante. => on apparaitra dans un bloc.
+
+=====================================================================
+
+ok (facilité) >
+load : reinit de l'anim du héros ???
+Si anm d'atterrissage, load slot, la balle s'écrase.
+=> Au plus simple, forcer l'anim de wait.
++ pb du n° du slot. Ok parce qu'il n'y a qu'une anim utilisée dans le jeu... Mettre dans une var avant, copier la struct, reinit sur le bon n° de slot après.
+<
+ok/ anims : couper les anims de la balle pendant les transitions (c'est ça le truc qui fait que la balle s'applatit pendant le fade ! C'est l'anim de "marche"). => reset de l'anim ? début du walk == image du wait.
+ok/ bruitage prend/pose ?
+ok/ bruitage mort.
+ok/ bruitage cadeau.
+ok/ bruitage save & load.
+ok/ timer sur la saisie du high score.
+ok/ musique death.
+ok/ timer sur les textes du jeu : 1 sec pour le "get the spellbook", beaucoup plus long pour les autres (voir pas ?). => 1 pour le game over quand même (avec la musique quand game over ?).
+ok/ loops musiques.
+ok/ memset replay.
+ok/ faire une table de 256 valeurs, on calcule pour chaque x * coef / 256. Et hop !
+>>
+u16	gpTV2xCLUT[65536];
+
+// Calcul de la grosse CLUT pour le mode TV2x.
+#define	TV2x_FACTOR	200		// * factor, / 256
+void TV2x_CalculateCLUT(SDL_Surface *pSDL_Dst)
+{
+	u32	i;
+	u8	r, g, b;
+
+	for (i = 0; i < 65536; i++)
+	{
+		SDL_GetRGB(i, pSDL_Dst->format, &r, &g, &b);
+		r = ((u32)r * TV2x_FACTOR) / 256;
+		g = ((u32)g * TV2x_FACTOR) / 256;
+		b = ((u32)b * TV2x_FACTOR) / 256;
+		gpTV2xCLUT[i] = SDL_MapRGB(pSDL_Dst->format, r, g, b);
+	}
+}
+<<
+ok, le même/ exe : mettre un checksum comme celui du slug.
+ok/ entrée dans la table (tri sur nb d'objets, puis sur le temps).	=> revoir pour quand pas tous les objets. / hmmm... Noter le timer quand on ramène un objet ?
+ok (return dans Game pour renvoyer ce qu'à renvoyé le menu)/ high score, entrée du nom, "fire" revient au menu principal au lieu d'aller au jeu directement.
+on oublie >
+main menu : scroll sous l'image, l'image fade mais pas le scroll.
+   > scroll: Hmmm... toujours le problème de synchro, ça saute... Voir si on garde ou pas.
+<
+basta/ Font_CreateTxtColors : voir le décalage de 1 dans le calcul ?
+ok/ u32 Room_AllObjTst(void) > mettre à jour un byte : b7 = tout trouvé / b0-6 : nb d'objets. Ca servira pour les scores.
+ok/ mettre tir + get pour passer les menus + les textes.
+ok/ flash quand on fait esc jeu > menu.
+ok/ menu credits 2 : 25th anniversary edition credits.
+ok/ hi sc : si pas de nom, "LUPIN III"
+ok/ hi sc : si que des espaces, "LUPIN III"
+ok/ high scores : load/save.
+ok/ high scores : affichage.
+ok/ high scores : saisie du nom (même menu + ligne de saisie).
+ok/ scr_load + save, tester nSz.
+ok/ saisie du high score
+ok/ décalage de la table
+ok/ couper le "timer stop" si mort.
+ok/ SDL_SetColorKey(gVar.pBlk, SDL_SRCCOLORKEY, 255);//SDL_MapRGB(gVar.pBlk->format, 255, 0, 255));
+ok, c'était bon/ > Changer la couleur de transparence des images ? (255 est pris par la couleur de la fonte).
+hmmm >
+Problème sur les palettes des textes en full screen. Aussi avec le mode de rendu 32 bpp. Pareil au bureau.
+=> Les trésors sont blittés avec un fond blanc... (ou alors blitter un rect avant).
+marche en full screen avec 8 palettes au lieu de 4 ?!? => sauf cadeaux sur fond blanc.
+nSDL_Flags |= SDL_HWPALETTE;	//tst
+//nSDL_Flags |= SDL_HWPALETTE;	//tst
+<
+ok/ macro pour lancer les textes.
+ok/ gros bug ! Si on pose un objet à l'emplacement d'un cadeau, l'objet disparaît !!!
+ok/ gfx : protéger les datas (PSD).
+ok/ load : mettre un msg "slot not found" si pas de svg.
+ok/ cfg : faire un prg externe "airball conf", reprendre celui du slug.
+ok/ !!! Le timer est ok : peut-être la bonne idée => les cadeaux font un timer stop pendant 5 ou 10 sec ! :) => timer stop => en rouge.
+ok/ svg : sauver timer + timer_stop.
+ok/ faire un timer, flaguer les retours d'objets dans la salle principale, classement en fct du nombre d'objets trouvés + du temps.
+ok/ menu main : press fire to play.
+ok/ cadeaux : A donner moins souvent (voir sur l'original).
+ok/ cadeaux : défilement du score (voir sur airball).  1 en 1.
+ok/ cadeaux : score (voir les points sur airball).
+>
+Diamant vert : 25 50 50 50 50 25 50 50 50 25 50 50 50 25 25 50 25 25 50 25 50 50 50 50 50 25 25 50 50 25
+Boite rouge : 31 31 31 31 31 31 31 31 31
+Diamant bleu : 100 100 50 50 50 100 50 50 50 100 100 100 100
+Lingot : (75) 75 100(?) 75 75 75 75 75 75 75
+256 > 306
+693 > 768 75 objet ?
+3429
+<
+ok/ svg : message "slot x saved" / "slot x loaded".
+ok/ système pour le spellbook + les items.
+changé / fonte : faire une table de SCR_Height lignes qui indique la couleur de la ligne. => On pourra faire un pseudo raster pour colorier la fonte !
+changé / >> void Font_SetTxtColors(u8 r1, u8 g1, u8 b1, u8 r2, u8 g2, u8 b2, u8 nPalNo, s32 nPosY); > voir le décalage de 1 dans le calcul ?
+ok/ txt ingredients, mettre une autre couleur pour les ingrédients.
+ok/ svg : seulement si phase jeu == jeu normal + pas anim de mort.
+non/ air : voir pour clearer les virgules pendant le gonflage ?
+ok/ cadeaux : attrapage par le joueur.
+ok/ fade, attendre la synchro pour le fade des pièces... => flag, si flag dans loop, mettre la palette physique.
+ok/ fade : supprimer le param "phy" de Room_PalSetNo().
+ok/ bug : apparition sur un gonfleur, fade, puis anim d'atterrissage.
+ok >
+cadeaux, si on manque de blocs, on peut les faire sur une planche à part.
+=> Code 255, et on "reprogramme" le bloc en question dans les blocs sources.
+=> On ne place le code qu'au moment de l'affichage du décor, et on le retire de la table après l'affichage => les collisions ne seront pas testées.
+cadeaux : 1 dans la salle, juste affiché et c'est lui qui teste le joueur.
+1>9 13>15 47 49 53 59 85 90>91 94>95 108>112 142>144 215 245>246
+<
+ok >
+svg : il faudra rajouter les cadeaux.
+	s8	nPresent;		// -1, pas de cadeau, sinon n° du cadeau [0;3].
+	u8	nPresentPosX, nPresentPosY, nPresentPosZ;
+<
+ok/ svg : palette de la salle pas bonne, garde celle en cours. => forcer la palette qui va bien.
+ok/ Air : passer le fond de jauge dans le décor.
+ok/ vies : passer l'affichage dans l'arrière plan ? (comme pour les objets). => ce serait pas mal.
+ok/ Sauvegarde de la partie en cours, faire plusieurs slots (F1-F8 ?). (F1>F4 load / F5>F8 save ?).
+ok/ svg : il faudra rajouter le score.
+ok >
+dessiner un carré noir derrière les portes côtés murs.
+-12, -5, sz 12 12  gauche blk 22, z+1
+#define	EXIT_BLK_X1	22
+-14, -14 sz 14 12  droite blk 18, z+1
+#define	EXIT_BLK_Y1	18
+<
+ok/ txt : shadow sous le texte.
+ok/ intégrer la gestion de la config + gestion du joystick.
+ok/ On doit pouvoir dégager la fct "Fade()".
+ok/ crucifix: pb quand position de départ du héros en salle 0. (Idem original...).
+>
+>>> si on garde vmax, plus de problèmes. => Oui, parce que si on change, ça posera des problèmes dans la façon dont certaines salles ont été pensées.
+quand on passe entre 2 blocs, il faut que la balle tombe.
+mvt, sacade dans les diagonales.
+héros s'arrête, clearer les virgules de la position ?
+<
+ok/ redémarrage du jeu, réinitialiser le labyrinthe.
+ok/ redémarrage du jeu, faire apparaitre le crucifix à l'endroit de la dernière mort. (hum...).
+ok/ gHero.nJumpPosZOrg => init au niveau du changement de salle.
+ok, modif/ saut juste devant une porte, n'avance pas.
+ => le problème, c'est qu'on a pas encore mis l'anim de saut.
+ok/ + une frame de descente sur la porte avant le fade ?
+ok/ passage d'une salle à l'autre : saut juste devant la porte, ne saute pas.
+ok/ saut derrière une porte, il manque un coup d'avance.
+ok/ hauteur 'z' du saut lors du passage de salle en sautant.
+ok/ chute, noter la hauteur de départ de la chute. (pour future explosion si chute de trop haut).
+ok, enfin, ça ira/ objets : faire une recherche des blocs dans un ordre qui va bien.
+ok/ saut, donner une direction, avancer en permanence (si bloc, le mouvement sera bloqué).
+ok/ saut, voir pour faire un saut à 2 blocs très précisement.
+ok/ sorties : revoir le test de décalage, car on peut maintenant sortir des deux côtés.
+ok/ sorties, voir si on peut ajouter un pixel (voir pb dans 1 salle au sud, en longeant les murs).
+ok/ room_init : se servir du -1 pour revivre. init des coord à l'init pour la première salle.
+ok/ blocs qui piquent.
+ok >
+ctc : peut-être faire un système de bits : (et attention à l'ordre !).
+0 = NULL
+1 = HARD
+2 = SPIKE
+4 = PUMP
+<
+ok/ => Le gros bloc de glace ne pique pas !
+ok/ portes : décalage balle si obstacle devant la porte.
+ok/ objets : ne prendre que si il n'y a rien de posé sur l'objet.
+en bas, ça devrait suffire/ sortie, tester à plusieurs niveaux (en haut et en bas du bloc du perso ?).
+ok/ objet porté, le mettre dans la palette non modifiée.
+ok/ objet porté, le mettre dans l'image de fond plutôt que de le blitter à chaque fois.
+ok/ possibilité de compter l'avance totale lors d'un saut et de couper cette avance précisément au bout de 2 blocs.
+non/ voir le blocage de 1 frame à la fin de l'avance, si en faisant /23 ça fonctionnerait ?
+ok/ changement de salle, faire un case spécial dans une fct game.
+ok, c'est parce que le mvt est bloqué soit pdt la montée (avance impossible, puis on monte) / voir le décalage avec la gestion du saut avant ou après le déplacement.
+ok/ bug : avance dans les sauts. (toute petite, mais quand même).
+ok/ palettes : chgt de résolution => merde.
+ok/ heros : pas bon, il faut rajouter le saut sur le nKb.
+ok/ saut, quand on dépasse la hauteur de départ, avance = 0.
+ok/ rallonger un peu la hauteur affichée (bricoler les murs).
+ok/ gérer la salle avec des cubes.
+ok/ sortie, voir si on peut réduire l'espace de toucher. (Que ça ne change que sur les 2 blocs).
+non/ faire une passe d'init pour initialiser les pointeurs sur chaque salle ?
+
+
+
+=====================================================================
+
+
+printf("exit x : %d %d sx=%d\n", gHero.nPosX>>8, gHero.nPosY>>8, nSpdX);
+printf("exit y : %d %d sy=%d\n", gHero.nPosX>>8, gHero.nPosY>>8, nSpdY);
+
+printf("jmp button. Kb=%02x / x=%x y=%x\n", nJumpKb, gHero.nPosX, gHero.nPosY);
+printf("a. Kb=%02x\n / x=%x y=%x\n", nJumpKb, gHero.nPosX, gHero.nPosY);
+printf("b. Kb=%02x\n / x=%x y=%x\n", nJumpKb, gHero.nPosX, gHero.nPosY);
+
+
+
+>>>
+v1 en colonnes.
+		for (i = 0; i < ROOM_MAX_X * ROOM_MAX_Y; i++)
+		{
+			nIdx = pDispOrd[i];//i;
+			x = nIdx & 7;
+			y = nIdx >> 3;
+			if (x < gRoom.pRoomData->nDimX && y < gRoom.pRoomData->nDimY)
+			for (z = ROOM_MAX_Z - 2; z >= 0; z--)
+			{
+				nBlk = gRoom.pRoomData->pTab[(ROOM_MAX_X * ROOM_MAX_Y * z) + (y * ROOM_MAX_X) + x];
+				if (nBlk)
+				{
+					sSrc.x = (nBlk - 1) * GFX_BLK_W;
+					sSrc.y = 0;
+					sSrc.w = GFX_BLK_W;
+					sSrc.h = GFX_BLK_H;
+					ISO_ScreenPosition(x * MAP_TILEW, y * MAP_TILEH, z * MAP_TILEZ, &nScrX, &nScrY);
+					sDst.x = nScrX - (GFX_BLK_W / 2);
+					sDst.y = nScrY - (GFX_BLK_H - 32);
+					SDL_BlitSurface(gVar.pBlk, &sSrc, gVar.pScreen, &sDst);
+				}
+			}
+<<<
+
+
+
+//+ test z < 0 => z = 0;
+
+printf("%d\n", nPlayerIdx);
+
+/*
+// Structure pour le tri de l'affichage des cubes.
+struct SCubeDisp
+{
+	s32	x, y;
+	u32	nCubeNo;
+	u32	nPrio;
+};
+*/
+
+
+
+>>>
+/*
+		u32	x, y;
+		for (y = 0; y < gRoom.nDimY; y++)
+		{
+			for (x = 0; x < gRoom.nDimX; x++)
+			{
+		ISO_ScreenPosition(0 + (x * MAP_TILEW), 0 + (y * MAP_TILEH), (ROOM_MAX_Z - 1) * MAP_TILEZ, &nScrX, &nScrY);
+//		ISO_ScreenPosition(0 + (x * MAP_TILEW), 0 + (y * MAP_TILEH), 0, &nScrX, &nScrY);
+		plot(nScrX, nScrY);
+		ISO_ScreenPosition(15 + (x * MAP_TILEW), 0 + (y * MAP_TILEH), (ROOM_MAX_Z - 1) * MAP_TILEZ, &nScrX, &nScrY);
+//		ISO_ScreenPosition(15 + (x * MAP_TILEW), 0 + (y * MAP_TILEH), 0, &nScrX, &nScrY);
+		plot(nScrX, nScrY);
+		ISO_ScreenPosition(15 + (x * MAP_TILEW), 15 + (y * MAP_TILEH), (ROOM_MAX_Z - 1) * MAP_TILEZ, &nScrX, &nScrY);
+//		ISO_ScreenPosition(15 + (x * MAP_TILEW), 15 + (y * MAP_TILEH), 0, &nScrX, &nScrY);
+		plot(nScrX, nScrY);
+		ISO_ScreenPosition(0 + (x * MAP_TILEW), 15 + (y * MAP_TILEH), (ROOM_MAX_Z - 1) * MAP_TILEZ, &nScrX, &nScrY);
+//		ISO_ScreenPosition(0 + (x * MAP_TILEW), 15 + (y * MAP_TILEH), 0, &nScrX, &nScrY);
+		plot(nScrX, nScrY);
+			}
+		}
+*/
+
+//nPosX >>= 8;
+//nPosY >>= 8;
+//nPosZ >>= 8;
+
+//	*pnPosX = ( ( ((nPosX - nPosY) * 256 * ISO_TILEW) / MAP_TILEW) / 256) + XZERO;
+//	*pnPosY = ( ( ((nPosX + nPosY) * 256 * ISO_TILEH) / MAP_TILEH) / 256) + YZERO;
+//	pos.x = ( ( ((src.x - src.y) * 256 * TILEW_ISO) / TILEW_2D) / 256) + XZERO;
+//	pos.y = ( ( ((src.x + src.y) * 256 * TILEH_ISO) / TILEH_2D) / 256) + YZERO;
+
+/*
+	gHero.nPosX = 0;
+	gHero.nPosY = 0;
+
+	gHero.nPosX = 0;
+	gHero.nPosY = 0;
+*/
+<<<
+
+>>>>
+#include <stdlib.h>
+#include <stdio.h>
+
+// >> Ca tu ignores, j'ai fait ça dans un projet classique
+typedef	signed long	s32;
+struct sdl_rect
+{
+	s32	x, y;
+};
+typedef struct sdl_rect	SDL_Rect;
+// <<
+
+#define	TILEW_2D	20	// Taille des tiles 2D
+#define	TILEH_2D	20
+
+#define	TILEW_ISO	10	// Taille des tiles ISO
+#define	TILEH_ISO	10
+
+#define	XZERO	0	// Origine du référentiel ISO
+#define	YZERO	0
+
+// Convertit un (x,y) 2D en (x,y) isométrique.
+SDL_Rect convert2DtoISO(SDL_Rect src)
+{
+	SDL_Rect	pos;
+	pos.x = ( ( ((src.x - src.y) * 256 * TILEW_ISO) / TILEW_2D) / 256) + XZERO;
+	pos.y = ( ( ((src.x + src.y) * 256 * TILEH_ISO) / TILEH_2D) / 256) + YZERO;
+
+	return (pos);
+}
+
+int main(void)
+{
+	SDL_Rect	dst;
+	SDL_Rect	pSrc[] = { {0,0},{0,10},{10,0},{10,10},{20,10}, };
+	s32	i;
+
+	for (i = 0; i < (sizeof(pSrc)/sizeof(SDL_Rect)); i++)
+	{
+		dst = convert2DtoISO(pSrc[i]);
+		printf("src: x=%d y=%d / dst: x=%d y=%d\n", (int)pSrc[i].x, (int)pSrc[i].y, (int)dst.x, (int)dst.y);
+	}
+
+	return (0);
+}
+<<<<
+
+
+/*
+		s32	t;
+		if (gVar.pKeys[SDLK_KP2])
+		{
+			t = gRoom.nDimX;
+			if (++t <= ROOM_MAX_X) Room_Init(t, gRoom.nDimY);
+			gVar.pKeys[SDLK_KP2] = 0;
+		}
+		if (gVar.pKeys[SDLK_KP5])
+		{
+			t = gRoom.nDimX;
+			if (--t >= 2) Room_Init(t, gRoom.nDimY);
+			gVar.pKeys[SDLK_KP5] = 0;
+		}
+		if (gVar.pKeys[SDLK_KP3])
+		{
+			t = gRoom.nDimY;
+			if (++t <= ROOM_MAX_Y) Room_Init(gRoom.nDimX, t);
+			gVar.pKeys[SDLK_KP3] = 0;
+		}
+		if (gVar.pKeys[SDLK_KP1])
+		{
+			t = gRoom.nDimY;
+			if (--t >= 2) Room_Init(gRoom.nDimX, t);
+			gVar.pKeys[SDLK_KP1] = 0;
+		}
+*/
+
+

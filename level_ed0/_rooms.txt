@@ -1,0 +1,17 @@
+Pièces pas finies :
+
+---
+81  non, le haut est trop moche/ montage rampe escalier
+240 différent, mais ok/ montage
+261 ok/ montage (sol)
+17  ok/ blocs "this way" pas prenables
+74  montage étage, mais bof + avec la hauteur affichée en plus, pas possible (il faut jouer sur la perspective, et là ça se verrait)
+150 ok/ pumpkin pas prenables
+151 ok/ pumpkin pas prenables
+152 blocs traversables => blitter les 4 blocs à l'init du sol ! (avec un patch dégueu) Comme ça ils ne seront pas testés.
+177 ok/ blocs "this way" pas prenables
+227 montage modifé, on tombait pendant la diagonale.
+233 montage légèrement différent. (Avec les sauts, ça coincerait).
+260 ok/ flask pas prenables
+270 non, plus de place/ autre bloc de sol ? + / non/ montage blocs this way imprenables => testé, blocs prenables.
+

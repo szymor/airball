@@ -1,0 +1,62 @@
+
+Airball - 25th anniversary edition.
+Code & stuff: Clément CORDE
+Contact: c1702@yahoo.com
+
+Sound system: ST-Sound by Arnaud CARRE a.k.a Leonard/Oxygene (http://leonard.oxg.free.fr). This really is great stuff!
+SDL port by myself, I hope I didn't ruin the replayer in the process.
+
+
+
+ Howdy,
+
+ Il s'agit cette fois d'un petit remake du jeu Airball, jeu que j'adorais à l'époque sur Atari ST.
+
+ Le labyrinthe est le même que celui de l'Atari ST, soient 280 salles, mappées par moi-même et reconstruites via un éditeur que je pourrai éventuellement rendre public si certains sont intéressés. Les graphs sont aussi ceux de l'Atari ST, rippés par moi même également (heureusement qu'il y a Steem !).
+
+ Le jeu me semble un peu plus "nerveux" que celui du ST.
+
+ J'ai quand même du adapter quelques salles parce que le saut est très légèrement différent et qu'un ou deux passages bloquaient (je précise que sur ST, ça passait, mais visuellement c'était très désagréable aussi et on voyait que ça coinçait).
+
+ J'ai aussi fait une ou deux modifs sur des passages que "je" jugeais inutilement difficiles. J'aime bien les jeux difficiles, mais quand il s'agit de passer au pixel à un passage autrement sans aucun intérêt, non.
+
+ La grosse différence, c'est le timer. En effet, dans la version originale, il y avait un truc complètement sans intérêt : Le score. Le score ne sert à rien, on marque des points avec des "cadeaux" qui apparaissent aléatoirement, et ne sert surtout pas à gagner de vies. Donc, j'ai fini par trouver que mettre un chronomètre était une bonne idée, les "cadeaux" servant maintenant à faire un "timer stop" de 15 sec.
+
+ La deuxième différence, c'est qu'il y a des sauvegardes. Et ça simplifie BEAUCOUP le jeu ! (Peut-être un peu trop d'ailleurs, il aurait peut-être fallu les limiter). Ceux qui ont joué sur 8/16/32 bits sauront ce que je veux dire, assez peu de monde a du réussir à finir le jeu à l'époque...
+
+
+
+* Son :
+
+ Grâce à la replay de Leonard/Oxygene, j'ai pu intégrer les musiques originales de l'Atari ST ! ST-Sound rules ! (^_^) (J'espère ne pas avoir tout foutu par terre en "portant" (c'est un bien grand mot) la chose sur SDL). 
+
+
+
+* Touches :
+
+Déplacement, saut et prise/pose d'objets configurables. (airball_cfg.exe).
+Par défaut : Flèches, Left Ctrl = Saut, Space = Prendre/poser.
+
+F1 > F4 : Lecture slots 1 à 4.
+F5 > F8 : Sauvegarde slots 1 à 4.
+
+F9  : Toggle mode 1x / 2x / TV2x.
+F10 : Toggle fullscreen / windowed.
+
+
+
+* Synopsis original :
+
+Introduction
+
+     "Now you're really in trouble," said the Evil Wizard.
+
+     "I've warned you about trespassing in my mansion. Now, since you did not take heed of my warnings, I'm turning you into a ball of air and sending you deep into my mansion of over 250 rooms, to search for the spellbook that may give you clues on how to transform yourself into a human again. It will not be a simple task, for you, as the ball of air, have a slow leak, and you'll need to jump on an air pump in some rooms to remain inflated. Take heed, for if you pump up too much you will burst! If you are lucky enough to find the spellbook in these rooms, you'll next have to pick up the objects I've left, such as: crosses, tins of beans, a Buddha, a dragon statue, a pumpkin, a flask, and even crates that you'll need to get over treacherous obstacles! This is your one chance for survival", he cackles.
+
+     "Sounds easy," You laughingly boast to the Evil Wizard.
+
+     "Oh! Does it now!" he sneers. "Well, I'm also putting spikes in these rooms that will take your breath away, as well as killer pads on the floor. You have no chance for success...Hee! Hee! Hee!"
+
+
+
+--- End of file.
